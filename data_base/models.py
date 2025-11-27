@@ -1655,13 +1655,13 @@ class BotDatabase:
                 AND EXISTS (
                     SELECT 1 FROM product_variants pv
                     JOIN sizes s ON pv.size_id = s.id
-                    WHERE pv.product_id = p.id AND s.value IN ({placeholders})
+                    WHERE pv.product_id = p.id AND s.value IN ({placeholders}) AND pv.quantity > 0
                 )
             """
             params.extend(sizes)
         elif size:
             # Старая логика для одного размера
-            query += " AND EXISTS (SELECT 1 FROM product_variants pv JOIN sizes s ON pv.size_id = s.id WHERE pv.product_id = p.id AND s.value = ?)"
+            query += " AND EXISTS (SELECT 1 FROM product_variants pv JOIN sizes s ON pv.size_id = s.id WHERE pv.product_id = p.id AND s.value = ? AND pv.quantity > 0)"
             params.append(size)
 
         cursor = self.execute_query(query, tuple(params))
@@ -1705,13 +1705,13 @@ class BotDatabase:
                 AND EXISTS (
                     SELECT 1 FROM product_variants pv
                     JOIN sizes s ON pv.size_id = s.id
-                    WHERE pv.product_id = p.id AND s.value IN ({placeholders})
+                    WHERE pv.product_id = p.id AND s.value IN ({placeholders}) AND pv.quantity > 0
                 )
             """
             params.extend(sizes)
         elif size:
             # Старая логика для одного размера
-            query += " AND EXISTS (SELECT 1 FROM product_variants pv JOIN sizes s ON pv.size_id = s.id WHERE pv.product_id = p.id AND s.value = ?)"
+            query += " AND EXISTS (SELECT 1 FROM product_variants pv JOIN sizes s ON pv.size_id = s.id WHERE pv.product_id = p.id AND s.value = ? AND pv.quantity > 0)"
             params.append(size)
 
         query += " ORDER BY p.id DESC, pm.id"
@@ -1802,7 +1802,7 @@ class BotDatabase:
             SELECT 1 FROM product_variants pv
             JOIN sizes s ON pv.size_id = s.id
             JOIN products p ON pv.product_id = p.id
-            WHERE p.is_active = 1 AND s.value = ? LIMIT 1
+            WHERE p.is_active = 1 AND s.value = ? AND pv.quantity > 0 LIMIT 1
             """,
             (size,)
         )
@@ -1869,7 +1869,7 @@ class BotDatabase:
         
         # Отдельно обрабатываем фильтр по размеру, если он есть
         if 'size' in filters and filters['size'] is not None:
-            query += " AND EXISTS (SELECT 1 FROM product_variants pv JOIN sizes s ON pv.size_id = s.id WHERE pv.product_id = p.id AND s.value = ?)"
+            query += " AND EXISTS (SELECT 1 FROM product_variants pv JOIN sizes s ON pv.size_id = s.id WHERE pv.product_id = p.id AND s.value = ? AND pv.quantity > 0)"
             params.append(filters['size'])
         
         # Исключаем категории, которые None
@@ -1903,7 +1903,7 @@ class BotDatabase:
 
         # Отдельно обрабатываем фильтр по размеру
         if 'size' in filters and filters['size'] is not None:
-            query += " AND EXISTS (SELECT 1 FROM product_variants pv JOIN sizes s ON pv.size_id = s.id WHERE pv.product_id = p.id AND s.value = ?)"
+            query += " AND EXISTS (SELECT 1 FROM product_variants pv JOIN sizes s ON pv.size_id = s.id WHERE pv.product_id = p.id AND s.value = ? AND pv.quantity > 0)"
             params.append(filters['size'])
 
         query += " LIMIT 1"
@@ -1970,7 +1970,7 @@ class BotDatabase:
             SELECT 1 FROM products p
             JOIN product_variants pv ON p.id = pv.product_id
             JOIN sizes s ON pv.size_id = s.id
-            WHERE p.is_active = 1 AND s.value = ? AND p.category = ?
+            WHERE p.is_active = 1 AND s.value = ? AND p.category = ? AND pv.quantity > 0
         """
         params = [size_value, category]
 
