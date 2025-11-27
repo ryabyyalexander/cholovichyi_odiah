@@ -149,10 +149,9 @@ async def handle_profile(callback: CallbackQuery, state: FSMContext, manager: Me
     ])
 
     # Кнопка помощи
-    if user_id in admins:
-        profile_kb.inline_keyboard.append([
-            InlineKeyboardButton(text="❓ Як користуватись ботом", callback_data="user_show_help")
-        ])
+    profile_kb.inline_keyboard.append([
+        InlineKeyboardButton(text="❓ Як користуватись ботом", callback_data="user_show_help")
+    ])
 
     # Получаем все три размера из JSON size
     user_size_json = user[USER_FIELDS.get('size', -1)] if 'size' in USER_FIELDS else None
