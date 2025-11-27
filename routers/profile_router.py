@@ -126,6 +126,9 @@ async def handle_profile(callback: CallbackQuery, state: FSMContext, manager: Me
         profile_kb.inline_keyboard.insert(0, [
             InlineKeyboardButton(text="🅰️   Адмін панель", callback_data="admin_panel")
         ])
+        profile_kb.inline_keyboard.insert(1, [
+            InlineKeyboardButton(text="✅  Архів товарів", callback_data="admin_archive")
+        ])
 
     # Кнопка статистики просмотров
     # profile_kb.inline_keyboard.append([

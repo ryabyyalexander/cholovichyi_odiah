@@ -44,11 +44,7 @@ async def show_admin_panel(callback: CallbackQuery, state: FSMContext, manager: 
             builder.button(text=f"📦 Резерви ({active_reservations_count})", callback_data="manage_reservations")
 
         builder.button(text="💎 Акції", callback_data="admin_promotions")
-        builder.button(text="👤 Управління користувачами", callback_data="admin_user_management")
-
-    builder.button(text="✅  Архів товарів", callback_data="admin_archive")
-    
-    builder.button(text="❇️  Статистика продажів", callback_data="admin_sales_stats")
+        builder.button(text="❇️  Статистика продажів", callback_data="admin_sales_stats")
     builder.button(text="✳️  Звіти по товарах", callback_data="admin_inventory_reports_menu")
     builder.button(text="← Назад до профілю", callback_data="admin_back_to_profile")
     builder.adjust(1)
