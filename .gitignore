@@ -115,3 +115,4 @@ bot.log
 *.db
 *.log
 .DS_Store
+/tests/

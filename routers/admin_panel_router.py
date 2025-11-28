@@ -138,21 +138,6 @@ async def deactivate_promotion(callback: CallbackQuery, manager: MessageManager)
 
 
 
-@router.callback_query(F.data == "admin_archive")
-async def show_archive(callback: CallbackQuery, state: FSMContext, manager: MessageManager):
-    """Показывает архив товаров (активные и неактивные)"""
-    products = data_base.get_all_products()
-    if not products:
-        await callback.answer("Товарів не знайдено.", show_alert=True)
-        return
-
-    user_id = callback.from_user.id
-    slider_manager = SliderManager(manager, state)
-    media_list, product_ids = format_media(products)
-    await slider_manager.start_slider(media_list=media_list, product_ids=product_ids, source="archive", user_id=user_id)
-    await callback.answer()
-
-
 @router.callback_query(F.data == "admin_build_cart")
 async def handle_build_cart(callback: CallbackQuery, state: FSMContext, manager: MessageManager):
     """Собрать корзину - заглушка"""

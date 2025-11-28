@@ -15,7 +15,7 @@ from utils.lexicon import LOYALTY_LEXICON, HELP_TEXT, btn
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from enums.sizes_enums import JacketSizes, JerseySizes, JeansSizes
 from utils.view_tracker import view_tracker
-from utils.slider_manager import SliderManager
+from utils.slider_manager import SliderManager, format_media
 from utils.functions import get_cart_block_profile
 
 router = Router()
@@ -270,6 +270,21 @@ async def handle_profile(callback: CallbackQuery, state: FSMContext, manager: Me
     ])
 
     await manager.edit(profile_text, reply_markup=profile_kb)
+
+
+@router.callback_query(F.data == "admin_archive")
+async def show_archive(callback: CallbackQuery, state: FSMContext, manager: MessageManager):
+    """Показывает архив товаров (активные и неактивные)"""
+    products = data_base.get_all_products()
+    if not products:
+        await callback.answer("Товарів не знайдено.", show_alert=True)
+        return
+
+    user_id = callback.from_user.id
+    slider_manager = SliderManager(manager, state)
+    media_list, product_ids = format_media(products)
+    await slider_manager.start_slider(media_list=media_list, product_ids=product_ids, source="archive", user_id=user_id)
+    await callback.answer()
 
 @router.callback_query(F.data == 'profile_referral_link')
 async def handle_referral_link(callback: CallbackQuery, state: FSMContext, manager: MessageManager):
