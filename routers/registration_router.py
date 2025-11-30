@@ -49,17 +49,17 @@ async def handle_contact(message: Message, manager: MessageManager):
         (contact.phone_number, user_id)
     )
 
-    # --- Проверка и применение акции "Золотой старт" ---
-    promotion = data_base.get_active_promotion("GIVE_GOLD_ON_FIRST_LOGIN")
-    if promotion:
-        loyalty_service = LoyaltyService(data_base)
-        loyalty_service.add_points_for_purchase(user_id, 5000)
-        await manager.send(
-            f"🎉 <b>Вітаємо з реєстрацією!</b>\n\n" 
-            f"Ви отримуєте бонус в рамках акції <b>\"{promotion['name']}\"</b>.\n"
-            f"Вам нараховано 5000 балів та присвоєно рівень <b>GOLD</b>!\n"
-            f"Насолоджуйтесь ексклюзивними знижками."
-        )
+    # # --- Проверка и применение акции "Золотой старт" ---
+    # promotion = data_base.get_active_promotion("GIVE_GOLD_ON_FIRST_LOGIN")
+    # if promotion:
+    #     loyalty_service = LoyaltyService(data_base)
+    #     loyalty_service.add_points_for_purchase(user_id, 5000)
+    #     await manager.send(
+    #         f"🎉 <b>Вітаємо з реєстрацією!</b>\n\n" 
+    #         f"Ви отримуєте бонус в рамках акції <b>\"{promotion['name']}\"</b>.\n"
+    #         f"Вам нараховано 5000 балів та присвоєно рівень <b>GOLD</b>!\n"
+    #         f"Насолоджуйтесь ексклюзивними знижками."
+    #     )
 
     await manager.send(
         f"✅  Зараз доступні майже всі функції.\nЛаскаво просимо  →    /start\n\n⏳  Як тільки адміністратор підтвердить ваш доступ, " 
