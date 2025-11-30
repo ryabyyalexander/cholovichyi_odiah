@@ -233,7 +233,7 @@ def create_keyboard(
             filters_to_check['sizes'] = size_values
 
         # Универсальная проверка для всех типов кнопок
-        if data_base.get_filtered_product_count(**filters_to_check) == 0:
+        if enum_class.__name__ != 'CreateProduct' and data_base.get_filtered_product_count(**filters_to_check) == 0:
             continue
 
         emoji = getattr(item, 'emoji', '')
