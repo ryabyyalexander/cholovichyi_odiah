@@ -386,6 +386,20 @@ class BotDatabase:
         );
         """)
 
+        # Таблица акций
+        self.execute_query("""
+        CREATE TABLE IF NOT EXISTS promotions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            description TEXT,
+            start_date TIMESTAMP,
+            end_date TIMESTAMP,
+            is_active BOOLEAN DEFAULT 0,
+            action_type TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        """)
+
         # Предзаполняем таблицу размеров при первом запуске
         if not self.execute_query("SELECT 1 FROM sizes LIMIT 1").fetchone():
             self._initialize_sizes()
@@ -395,6 +409,10 @@ class BotDatabase:
         # Предзаполняем темы подписок
         if not self.execute_query("SELECT 1 FROM subscriptions LIMIT 1").fetchone():
             self._initialize_subscriptions()
+
+        # Предзаполняем акции
+        if not self.execute_query("SELECT 1 FROM promotions LIMIT 1").fetchone():
+            self._initialize_promotions()
 
     def _create_indexes(self) -> None:
         """Создает оптимизирующие индексы"""
@@ -456,6 +474,18 @@ class BotDatabase:
         for topic_key, description in topics:
             self.add_subscription_topic(topic_key, description)
         logger.info("Таблица подписок инициализирована.")
+
+    def _initialize_promotions(self) -> None:
+        """Инициализирует акции."""
+        promotions = [
+            ('Золотой старт', 'Новым пользователям в течение 7 дней после регистрации начисляется 5000 баллов и присваивается уровень GOLD.', '2025-08-14', '2025-08-21', 0, 'GIVE_GOLD_ON_FIRST_LOGIN')
+        ]
+        for name, description, start_date, end_date, is_active, action_type in promotions:
+            self.execute_query(
+                "INSERT INTO promotions (name, description, start_date, end_date, is_active, action_type) VALUES (?, ?, ?, ?, ?, ?)",
+                (name, description, start_date, end_date, is_active, action_type)
+            )
+        logger.info("Таблица акций инициализирована.")
 
     # Удалено: функция миграции для order_id в reservations (столбец уже есть в CREATE TABLE)
 
