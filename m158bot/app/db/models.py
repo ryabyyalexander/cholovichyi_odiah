@@ -2,6 +2,7 @@ import datetime
 from sqlalchemy import (
     create_engine, BigInteger, String, ForeignKey, DateTime, func, Boolean, JSON, Integer, Float
 )
+from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 # Base class for all models
@@ -60,3 +61,8 @@ class Product(Base):
     )
 
 # В будущем здесь будут и другие модели: ProductMedia, ProductVariant, Order и т.д.
+
+async def create_tables(engine: AsyncEngine):
+    """Асинхронно создает все таблицы в базе данных"""
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
