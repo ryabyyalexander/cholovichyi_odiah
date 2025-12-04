@@ -116,3 +116,5 @@ bot.log
 *.log
 .DS_Store
 /tests/
+/.venv_m158/
+/.env.bak

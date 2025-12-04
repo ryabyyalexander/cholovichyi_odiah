@@ -2,3 +2,4 @@ aiogram
 sqlalchemy
 asyncpg
 pydantic-settings
+greenlet

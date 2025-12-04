@@ -46,7 +46,7 @@ class AppConfig(BaseSettings):
     db_name: str
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file="m158bot/.env",
         env_file_encoding='utf-8'
     )
 
