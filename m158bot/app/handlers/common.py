@@ -1,4 +1,5 @@
 import asyncio
+from typing import Dict
 
 from aiogram import Router
 from aiogram.filters import CommandStart
@@ -13,6 +14,10 @@ from ..services.caption_service import get_start_caption, animate_start_caption
 # Создаем роутер для общих команд
 router = Router()
 
+# Словарь для хранения активных задач анимации в оперативной памяти
+# Ключ - user_id, значение - asyncio.Task
+ACTIVE_ANIMATIONS: Dict[int, asyncio.Task] = {}
+
 
 @router.message(CommandStart())
 async def handle_start(message: Message, message_service: MessageService, state: FSMContext):
@@ -20,14 +25,12 @@ async def handle_start(message: Message, message_service: MessageService, state:
     Этот хендлер будет срабатывать на команду /start.
     Он регистрирует пользователя и отправляет приветственное сообщение.
     """
-    # --- Остановка предыдущей анимации ---
-    data = await state.get_data()
-    if "animation_task" in data and data["animation_task"]:
-        data["animation_task"].cancel()
-
-    await message.delete()
-    
     user_id = message.from_user.id
+    await message.delete()
+
+    # --- Остановка предыдущей анимации ---
+    if user_id in ACTIVE_ANIMATIONS:
+        ACTIVE_ANIMATIONS[user_id].cancel()
     
     # Готовим данные для регистрации или обновления
     user_defaults = {
@@ -75,4 +78,5 @@ async def handle_start(message: Message, message_service: MessageService, state:
         message_service=message_service,
         keyboard=keyboard
     ))
-    await state.update_data(animation_task=animation_task)
+    # Сохраняем задачу в словарь в оперативной памяти
+    ACTIVE_ANIMATIONS[user_id] = animation_task
