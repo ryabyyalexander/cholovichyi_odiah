@@ -1,6 +1,7 @@
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
-from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.redis import RedisStorage
+from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from app.config import settings
@@ -17,7 +18,10 @@ db_session_factory = async_sessionmaker(
     expire_on_commit=False  # Важно для асинхронного кода
 )
 
+# Инициализация хранилища Redis для FSM
+redis_client = Redis(host=settings.redis.host, port=settings.redis.port)
+storage = RedisStorage(redis=redis_client)
+
 # Инициализация бота и диспетчера
-storage = MemoryStorage()
 bot = Bot(token=settings.bot.token, default=DefaultBotProperties(parse_mode='HTML'))
 dp = Dispatcher(storage=storage)
