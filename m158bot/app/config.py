@@ -1,9 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import List
 
 # A more structured way to use it in the app
 class BotSettings(BaseModel):
     token: str
+    admins: List[int]
 
 class DbSettings(BaseModel):
     user: str
@@ -30,6 +32,7 @@ class EnvConfig(BaseSettings):
     Reads environment variables from the .env file.
     """
     bot_token: str
+    admin_ids: str = "" # Comma-separated list of admin IDs
     
     db_user: str
     db_password: str
@@ -50,9 +53,15 @@ def get_settings() -> Settings:
     Creates a populated Settings object.
     """
     env_config = EnvConfig()
-    
+
+    # Parse admin IDs from comma-separated string to list of ints
+    admin_ids = [int(admin_id.strip()) for admin_id in env_config.admin_ids.split(',') if admin_id.strip()]
+
     return Settings(
-        bot=BotSettings(token=env_config.bot_token),
+        bot=BotSettings(
+            token=env_config.bot_token,
+            admins=admin_ids
+        ),
         db=DbSettings(
             user=env_config.db_user,
             password=env_config.db_password,
