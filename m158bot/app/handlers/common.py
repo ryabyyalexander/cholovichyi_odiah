@@ -32,3 +32,4 @@ async def handle_start(message: Message, message_service: MessageService):
         text = f"С возвращением, {message.from_user.full_name}!"
 
     await message_service.send_message(text)
+    await message.delete()
