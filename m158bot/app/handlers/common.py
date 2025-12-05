@@ -31,5 +31,12 @@ async def handle_start(message: Message, message_service: MessageService):
     else:
         text = f"С возвращением, {message.from_user.full_name}!"
 
-    await message_service.send_message(text)
+    # Путь к фото. Убедитесь, что он правильный относительно корня проекта.
+    photo_path = "media/men.jpg" 
+
+    await message_service.send_media(
+        file_path_or_id=photo_path,
+        media_type='photo',
+        caption=text
+    )
     await message.delete()
