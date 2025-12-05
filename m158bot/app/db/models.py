@@ -34,6 +34,10 @@ class User(Base):
     # Связь для реферальной системы
     referrer_id: Mapped[int] = mapped_column(BigInteger, ForeignKey('users.user_id'), nullable=True)
 
+    # --- Поля для MessageManager ---
+    active_msg_id: Mapped[int] = mapped_column(BigInteger, nullable=True)
+    active_msg_type: Mapped[str] = mapped_column(String(50), nullable=True, default='text')
+
 
 class Product(Base):
     __tablename__ = 'products'
